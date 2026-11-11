@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="ko" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>스페인어 대명사 마스터 - 전치격 · 직접목적 · 간접목적 퀴즈</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Custom Font Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0f5ff',
+              100: '#e0ebff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
+    
+    .glow-success { box-shadow: 0 0 20px -3px rgba(16, 185, 129, 0.4); }
+    .glow-error { box-shadow: 0 0 20px -3px rgba(244, 63, 94, 0.4); }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-full font-sans antialiased flex flex-col selection:bg-blue-500 selection:text-white transition-colors duration-200">
+
+  <!-- Main Container -->
+  <div id="app" class="max-w-4xl mx-auto w-full px-4 py-6 flex-1 flex flex-col">
+    
+    <!-- HEADER NAVBAR -->
+    <header class="flex flex-col sm:flex-row items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-slate-800">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 text-white flex items-center justify-center shadow-md shadow-blue-500/20 font-bold text-xl">
+          <span>ES</span>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold leading-tight flex items-center gap-2">
+            스페인어 대명사 마스터
+            <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300 font-semibold">v2.5</span>
+          </h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400">전치격 · 직접목적 · 간접목적 대명사 완전 정복</p>
+        </div>
+      </div>
+
+      <!-- Controls & Stats Header -->
+      <div class="flex items-center gap-2 sm:gap-3 flex-wrap justify-end">
+        <!-- Streak -->
+        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold text-sm border border-amber-500/20">
+          <i data-lucide="flame" class="w-4 h-4 fill-amber-500 text-amber-500"></i>
+          <span id="streakCount">0</span> 연속
+        </div>
+
+        <!-- Score Rate -->
+        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold text-sm border border-emerald-500/20">
+          <i data-lucide="trophy" class="w-4 h-4 text-emerald-500"></i>
+          <span id="scoreText">0/0 (0%)</span>
+        </div>
+
+        <!-- Mode Toggle Button -->
+        <button id="toggleAiModeBtn" onclick="toggleMode()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 font-medium text-sm border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-100 transition-all">
+          <i data-lucide="sparkles" class="w-4 h-4 text-indigo-500"></i>
+          <span id="modeLabel">기본 문제 은행</span>
+        </button>
+
+        <!-- Stats Button -->
+        <button onclick="openStatsModal()" title="학습 통계" class="p-2 rounded-xl bg-slate-200/60 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all">
+          <i data-lucide="bar-chart-2" class="w-5 h-5"></i>
+        </button>
+
+        <!-- Sound Toggle -->
+        <button id="soundBtn" onclick="toggleSound()" title="소리 토글" class="p-2 rounded-xl bg-slate-200/60 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all">
+          <i data-lucide="volume-2" id="soundIcon" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- FILTER & ACTION BAR -->
+    <div class="mt-4 flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-slate-900 p-3 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-800">
+      
+      <!-- Filter Chips -->
+      <div class="flex items-center gap-1.5 overflow-x-auto py-0.5 no-scrollbar">
+        <span class="text-xs font-semibold text-slate-400 dark:text-slate-500 mr-1 flex items-center gap-1">
+          <i data-lucide="filter" class="w-3.5 h-3.5"></i> 필터:
+        </span>
+        <button onclick="setFilter('ALL')" id="filter-ALL" class="filter-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-blue-600 text-white transition-all">
+          전체 보기
+        </button>
+        <button onclick="setFilter('PREP')" id="filter-PREP" class="filter-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
+          전치격
+        </button>
+        <button onclick="setFilter('DIRECT')" id="filter-DIRECT" class="filter-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
+          직접목적
+        </button>
+        <button onclick="setFilter('INDIRECT')" id="filter-INDIRECT" class="filter-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
+          간접목적
+        </button>
+        <button onclick="setFilter('MISTAKES')" id="filter-MISTAKES" class="filter-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all flex items-center gap-1">
+          <i data-lucide="alert-circle" class="w-3 h-3 text-rose-500"></i> 오답 노트 <span id="mistakeBadge" class="ml-1 px-1.5 py-0.2 bg-rose-500 text-white rounded-full text-[10px]">0</span>
+        </button>
+      </div>
+
+      <!-- Generator Trigger Button -->
+      <button id="generateAiBatchBtn" onclick="generateAiBatch()" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-xs shadow-md shadow-indigo-500/20 transition-all ml-auto">
+        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> AI 문제 5개 무한 생생하기
+      </button>
+    </div>
+
+    <!-- PROGRESS BAR -->
+    <div class="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full mt-4 overflow-hidden">
+      <div id="quizProgressBar" class="bg-gradient-to-r from-blue-500 to-indigo-500 h-full w-0 transition-all duration-300"></div>
+    </div>
+
+    <!-- MAIN QUIZ DISPLAY CARD -->
+    <main class="mt-4 flex-1 flex flex-col justify-center">
+      
+      <!-- Quiz Card Container -->
+      <div id="quizCard" class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200/80 dark:border-slate-800 relative overflow-hidden transition-all duration-200">
+        
+        <!-- Category & Number Badge -->
+        <div class="flex items-center justify-between mb-6">
+          <span id="questionCategoryTag" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-300 flex items-center gap-1.5">
+            <i data-lucide="tag" class="w-3.5 h-3.5"></i> 문법 연습
+          </span>
+
+          <span id="questionCounterText" class="text-xs font-semibold text-slate-400 dark:text-slate-500">
+            문제 1 / 25
+          </span>
+        </div>
+
+        <!-- SPANISH SENTENCE DISPLAY -->
+        <div class="text-center py-4 my-2 bg-slate-50 dark:bg-slate-950/60 rounded-2xl border border-slate-100 dark:border-slate-800/80 p-4 relative">
+          <p id="spanishSentence" class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-relaxed">
+            <!-- Dynamic sentence with highlighted target pronoun -->
+          </p>
+          
+          <!-- Korean Translation Hint -->
+          <div class="mt-3 flex items-center justify-center gap-2">
+            <button id="toggleHintBtn" onclick="toggleTranslationHint()" class="text-xs text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 font-medium flex items-center gap-1 underline underline-offset-4">
+              <i data-lucide="eye" class="w-3.5 h-3.5"></i> 한국어 번역 보기
+            </button>
+          </div>
+          <p id="koreanTranslation" class="hidden mt-2 text-sm font-medium text-slate-600 dark:text-slate-300 animate-fadeIn">
+            <!-- Dynamic translation -->
+          </p>
+        </div>
+
+        <!-- USER INPUT QUESTIONS SECTION -->
+        <div id="interactionForm" class="mt-6 space-y-6">
+          
+          <!-- STEP 1: GRAMMAR CORRECTNESS (O / X) -->
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-blue-500 text-white text-xs flex items-center justify-center font-bold">1</span>
+              이 문장은 문법적으로 맞나요, 틀렸나요?
+            </label>
+
+            <div class="grid grid-cols-2 gap-3">
+              <button onclick="selectCorrectness(true)" id="btnCorrectO" class="option-ox-btn group relative p-4 rounded-2xl border-2 border-slate-200 dark:border-slate-800 hover:border-emerald-500 dark:hover:border-emerald-500 bg-slate-50/50 dark:bg-slate-800/40 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/30 flex items-center justify-center gap-3 transition-all">
+                <span class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400 font-black text-xl flex items-center justify-center group-hover:scale-110 transition-transform">⭕</span>
+                <span class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-700 dark:group-hover:text-emerald-300">올바름 (O)</span>
+              </button>
+
+              <button onclick="selectCorrectness(false)" id="btnCorrectX" class="option-ox-btn group relative p-4 rounded-2xl border-2 border-slate-200 dark:border-slate-800 hover:border-rose-500 dark:hover:border-rose-500 bg-slate-50/50 dark:bg-slate-800/40 hover:bg-rose-50/50 dark:hover:bg-rose-950/30 flex items-center justify-center gap-3 transition-all">
+                <span class="w-8 h-8 rounded-full bg-rose-100 text-rose-600 dark:bg-rose-950 dark:text-rose-400 font-black text-xl flex items-center justify-center group-hover:scale-110 transition-transform">❌</span>
+                <span class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-rose-700 dark:group-hover:text-rose-300">틀림 (X)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- STEP 2: PRONOUN TYPE CLASSIFICATION -->
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-blue-500 text-white text-xs flex items-center justify-center font-bold">2</span>
+              강조된 대명사(<mark id="targetPronounLabel" class="bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded text-slate-900 dark:text-slate-100 font-bold">me</mark>)의 종류는 무엇인가요?
+            </label>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <button onclick="selectType('PREP')" id="btnTypePREP" class="option-type-btn p-3.5 rounded-2xl border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-500 bg-slate-50/50 dark:bg-slate-800/40 font-semibold text-sm text-slate-700 dark:text-slate-300 text-center transition-all flex flex-col items-center justify-center gap-1">
+                <span class="text-xs text-indigo-500 dark:text-indigo-400 font-bold">Preposicional</span>
+                <span>📌 전치격 대명사</span>
+              </button>
+
+              <button onclick="selectType('DIRECT')" id="btnTypeDIRECT" class="option-type-btn p-3.5 rounded-2xl border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-500 bg-slate-50/50 dark:bg-slate-800/40 font-semibold text-sm text-slate-700 dark:text-slate-300 text-center transition-all flex flex-col items-center justify-center gap-1">
+                <span class="text-xs text-indigo-500 dark:text-indigo-400 font-bold">Objeto Directo</span>
+                <span>🎯 직접목적 대명사</span>
+              </button>
+
+              <button onclick="selectType('INDIRECT')" id="btnTypeINDIRECT" class="option-type-btn p-3.5 rounded-2xl border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-500 bg-slate-50/50 dark:bg-slate-800/40 font-semibold text-sm text-slate-700 dark:text-slate-300 text-center transition-all flex flex-col items-center justify-center gap-1">
+                <span class="text-xs text-indigo-500 dark:text-indigo-400 font-bold">Objeto Indirecto</span>
+                <span>💌 간접목적 대명사</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="pt-2">
+            <button id="submitAnswerBtn" onclick="submitAnswer()" disabled class="w-full py-4 rounded-2xl bg-slate-300 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold text-base shadow-lg transition-all flex items-center justify-center gap-2 cursor-not-allowed">
+              <span>두 가지 답변을 모두 선택해주세요</span>
+              <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- REVEALED FEEDBACK CARD (Initially Hidden) -->
+        <div id="feedbackCard" class="hidden mt-6 pt-6 border-t border-slate-200 dark:border-slate-800 space-y-5 animate-fadeIn">
+          
+          <!-- Banner Result -->
+          <div id="feedbackBanner" class="p-4 rounded-2xl flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div id="feedbackIconBox" class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold">
+                <!-- Icon -->
+              </div>
+              <div>
+                <h3 id="feedbackTitle" class="font-extrabold text-lg">
+                  <!-- Result Title -->
+                </h3>
+                <p id="feedbackSubtitle" class="text-xs font-medium opacity-90">
+                  <!-- Result Subtitle -->
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Answer Comparison Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+            <!-- Grammar Correctness Result -->
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/50">
+              <span class="text-xs font-semibold text-slate-400 block mb-1">1. 문법적 올바름</span>
+              <div class="flex items-center justify-between font-bold">
+                <span id="userOxResult" class="text-slate-800 dark:text-slate-200">내 선택: -</span>
+                <span id="correctOxResult" class="text-emerald-600 dark:text-emerald-400">정답: -</span>
+              </div>
+            </div>
+
+            <!-- Pronoun Type Result -->
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/50">
+              <span class="text-xs font-semibold text-slate-400 block mb-1">2. 대명사 종류</span>
+              <div class="flex items-center justify-between font-bold">
+                <span id="userTypeResult" class="text-slate-800 dark:text-slate-200">내 선택: -</span>
+                <span id="correctTypeResult" class="text-indigo-600 dark:text-indigo-400">정답: -</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Corrected Sentence if X -->
+          <div id="correctionBox" class="hidden p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60">
+            <span class="text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wide flex items-center gap-1 mb-1">
+              <i data-lucide="check-circle-2" class="w-4 h-4"></i> 올바른 문장 수정
+            </span>
+            <p id="correctedSentenceText" class="text-base font-bold text-slate-900 dark:text-amber-100">
+              <!-- Corrected spanish sentence -->
+            </p>
+          </div>
+
+          <!-- Detailed Grammar Explanation -->
+          <div class="p-4 rounded-2xl bg-blue-50/60 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 space-y-2">
+            <h4 class="text-xs font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wide flex items-center gap-1.5">
+              <i data-lucide="book-open" class="w-4 h-4"></i> 핵심 문법 해설 & 영·한 대입 구조
+            </h4>
+            <p id="grammarExplanation" class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
+              <!-- Dynamic Explanation -->
+            </p>
+          </div>
+
+          <!-- Trap Warning Alert -->
+          <div id="trapBox" class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs text-slate-600 dark:text-slate-300 flex items-start gap-2.5">
+            <i data-lucide="shield-alert" class="w-4 h-4 text-amber-500 shrink-0 mt-0.5"></i>
+            <div>
+              <span class="font-bold text-slate-800 dark:text-slate-200">자주 틀리는 포인트: </span>
+              <span id="trapText"><!-- Trap Text --></span>
+            </div>
+          </div>
+
+          <!-- Next Button -->
+          <button onclick="nextQuestion()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-base shadow-lg shadow-blue-500/25 transition-all flex items-center justify-center gap-2">
+            <span>다음 문제로 이동</span>
+            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+          </button>
+
+        </div>
+
+      </div>
+    </main>
+
+    <!-- FOOTER KEYBOARD HINT -->
+    <footer class="mt-6 text-center text-xs text-slate-400 dark:text-slate-500 flex items-center justify-center gap-4 flex-wrap">
+      <span>💡 키보드 단축키: <kbd class="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 rounded font-mono text-slate-700 dark:text-slate-300">O</kbd>/<kbd class="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 rounded font-mono text-slate-700 dark:text-slate-300">X</kbd> (문법 선택), <kbd class="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 rounded font-mono text-slate-700 dark:text-slate-300">1</kbd>/<kbd class="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 rounded font-mono text-slate-700 dark:text-slate-300">2</kbd>/<kbd class="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 rounded font-mono text-slate-700 dark:text-slate-300">3</kbd> (대명사 종류), <kbd class="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 rounded font-mono text-slate-700 dark:text-slate-300">Enter</kbd> (제출/다음)</span>
+    </footer>
+
+  </div>
+
+  <!-- STATS & MASTERY MODAL -->
+  <div id="statsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden animate-fadeIn">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 relative">
+      <button onclick="closeStatsModal()" class="absolute top-5 right-5 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <h2 class="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2 mb-4">
+        <i data-lucide="trophy" class="w-6 h-6 text-amber-500"></i> 학습 성취도 분석
+      </h2>
+
+      <div class="space-y-4">
+        <!-- Overview Stats -->
+        <div class="grid grid-cols-2 gap-3 text-center">
+          <div class="p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl">
+            <span class="text-xs text-slate-400 font-semibold block">총 푼 문제</span>
+            <span id="modalTotalQuestions" class="text-2xl font-black text-blue-600 dark:text-blue-400">0</span>
+          </div>
+          <div class="p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl">
+            <span class="text-xs text-slate-400 font-semibold block">전체 정답률</span>
+            <span id="modalAccuracy" class="text-2xl font-black text-emerald-600 dark:text-emerald-400">0%</span>
+          </div>
+        </div>
+
+        <!-- Pronoun Type Breakdown -->
+        <div class="space-y-3 pt-2">
+          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">유형별 숙달도</h3>
+          
+          <!-- Prep -->
+          <div>
+            <div class="flex justify-between text-xs font-bold mb-1">
+              <span>📌 전치격 인칭대명사</span>
+              <span id="prepRateText">0%</span>
+            </div>
+            <div class="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="prepProgressBar" class="bg-indigo-500 h-full w-0 transition-all"></div>
+            </div>
+          </div>
+
+          <!-- Direct -->
+          <div>
+            <div class="flex justify-between text-xs font-bold mb-1">
+              <span>🎯 직접목적 대명사</span>
+              <span id="directRateText">0%</span>
+            </div>
+            <div class="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="directProgressBar" class="bg-blue-500 h-full w-0 transition-all"></div>
+            </div>
+          </div>
+
+          <!-- Indirect -->
+          <div>
+            <div class="flex justify-between text-xs font-bold mb-1">
+              <span>💌 간접목적 대명사</span>
+              <span id="indirectRateText">0%</span>
+            </div>
+            <div class="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="indirectProgressBar" class="bg-purple-500 h-full w-0 transition-all"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reset Button -->
+        <div class="pt-4 border-t border-slate-100 dark:border-slate-800">
+          <button onclick="resetStats()" class="w-full py-2.5 rounded-xl border border-rose-200 dark:border-rose-900/50 text-rose-600 dark:text-rose-400 text-xs font-bold hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all">
+            학습 통계 초기화
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT APP LOGIC -->
+  <script>
+    /* ==========================================================================
+       1. HANDCRAFTED OFFLINE QUESTION BANK (25 High-Quality Traps & Rules)
+       ========================================================================== */
+    const OFFLINE_BANK = [
+      {
+        id: 1,
+        sentence: "Ana <mark class='bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded'>me</mark> invitó a su fiesta de cumpleaños.",
+        targetPronoun: "me",
+        isCorrect: true,
+        type: "DIRECT",
+        translation: "아나는 나를 자신의 생일 파티에 초대했다.",
+        correctedSentence: "Ana me invitó a su fiesta de cumpleaños.",
+        explanation: "<b>invitar</b>는 '~를 초대하다'라는 뜻을 가진 타동사로 <b>직접목적어</b>를 취합니다. 영어의 <i>'Ana invited me'</i>와 정확히 일치하며, '나를'에 해당하므로 직접목적 대명사 <b>me</b>가 사용된 올바른 문장입니다.",
+        trap: "me, te, nos, os는 직접목적어('나를/너를')와 간접목적어('나에게/너에게')의 형태가 같으므로 동사 구조를 파악해야 합니다."
+      },
+      {
+        id: 2,
+        sentence: "Carlos <mark class='bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded'>te</mark> da un regalo bonito.",
+        targetPronoun: "te",
+        isCorrect: true,
+        type: "INDIRECT",
+        translation: "카를로스는 너에게 예쁜 선물을 준다.",
+        correctedSentence: "Carlos te da un regalo bonito.",
+        explanation: "<b>dar</b>(주다) 동사는 'A(사물명사)를 B(사람)에게 주다' 구조입니다. 이미 문장에 <b>un regalo</b>(직접목적어)가 있으므로, 받음의 대상인 <b>te</b>는 '너에게'라는 <b>간접목적 대명사</b>입니다.",
+        trap: "문장에 이미 '선물, 편지' 같은 사물 목적어가 있다면 인칭 대명사는 간접목적어(~에게)일 확률이 매우 높습니다."
+      },
+      {
+        id: 3,
+        sentence: "María <mark class='bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded'>lo</mark> escribe una carta a su amigo.",
+        targetPronoun: "lo",
+        isCorrect: false,
+        type: "INDIRECT",
+        translation: "마리아는 친구에게 편지를 쓴다.",
+        correctedSentence: "María <u>le</u> escribe una carta a su amigo.",
+        explanation: "<b>escribir</b>는 '편지를(직접목적) ~에게(간접목적) 쓰다'입니다. 여기서 <i>lo</i>는 3인칭 직접목적어('그를/그것을')이므로 틀렸습니다. 3인칭 남성/여성 구분 없이 '~에게'는 간접목적 대명사 <b>le</b>를 써야 합니다.",
+        trap: "3인칭 단수 간접목적어(~에게)는 남녀 구별 없이 무조건 <b>le</b>입니다. (lo/la는 직접목적어)"
+      },
+      {
+        id: 4,
+        sentence: "Este pastel de chocolate es para <mark class='bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded'>tí</mark>.",
+        targetPronoun: "tí",
+        isCorrect: false,
+        type: "PREP",
+        translation: "이 초콜릿 케이크는 너를 위한 것이다.",
+        correctedSentence: "Este pastel de chocolate es para <u>ti</u>.",
+        explanation: "전치사 <b>para</b> 뒤에 왔으므로 <b>전치격 대명사</b>가 맞습니다. 그러나 2인칭 전치격 <b>ti</b>에는 강세 부호(틸데 `´`)를 붙이지 않습니다! 1인칭 <b>mí</b>는 소유격 <b>mi</b>(나의)와 구분하기 위해 틸데를 붙이지만 ti는 혼동할 단어가 없기 때문입니다.",
+        trap: "<b>mí</b>에는 강세 부호가 있지만, <b>ti</b>에는 절대 강세 부호를 붙이지 않습니다!"
+      },
+      {
+        id: 5,
+        sentence: "Ellos quieren ir al cine con <mark class='bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded'>mí</mark>.",
+        targetPronoun: "mí",
+        isCorrect: false,
+        type: "PREP",
+        translation: "그들은 나와 함께 영화관에 가고 싶어 한다.",
+        correctedSentence: "Ellos quieren ir al cine <u>conmigo</u>.",
+        explanation: "전치사 <b>con</b>(~와 함께)이 1인칭 <i>mí</i>, 2인칭 <i>ti</i>와 결합할 때는 특수 합체 형태인 <b>conmigo</b>(with me), <b>contigo</b>(with you)로 변형되어야 합니다. <i>con mí</i>는 문법적 오류입니다.",
+        trap: "<i>con mí</i> ❌ $\rightarrow$ <b>conmigo</b> ⭕ / <i>con ti</i> ❌ $\rightarrow$ <b>contigo</b> ⭕"
+      },
+      {
+        id: 6,
+        sentence: "A <mark class='bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded'>mí</mark> me gusta mucho el café.",
+        targetPronoun: "mí",
+        isCorrect: true,
+        type: "PREP",
+        translation: "나는 커피를 매우 좋아한다.",
+        correctedSentence: "A mí me gusta mucho el café.",
+        explanation: "<b>gustar</b> 구문에서 <b>A mí</b>는 간접목적어(me)를 재강조하기 위한 전치사구입니다. 전치사 <b>a</b> 뒤에 오므로 전치격 대명사 <b>mí</b>(강세 부호 포함)가 바르게 사용되었습니다.",
+        trap: "A mí me gusta에서 mí는 전치격, me는 간접목적 대명사입니다."
+      },
+      {
+        id: 7,
+        sentence: "¿Quieres venir con <mark class='bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded'>ti</mark> al parque?",
+        targetPronoun: "ti",
+        isCorrect: false,
+        type: "PREP",
+        translation: "너 나와 함께 공원에 갈래?",
+        correctedSentence: "¿Quieres venir <u>conmigo</u> al parque?",
+        explanation: "'나와 함께'라고 물어봐야 하므로 <i>contigo</i>(너와 함께)나 <i>con ti</i>가 아닌 <b>conmigo</b>(나와 함께)를 써야 합니다.",
+        trap: "상대방에게 '나랑 같이 갈래?'라고 물을 때는 <b>conmigo</b>입니다."
+      },
+      {
+        id: 8,
+        sentence: "Juan <mark class='bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded'>la</mark> vio en el parque ayer.",
+        targetPronoun: "la",
+        isCorrect: true,
+        type: "DIRECT",
+        translation: "후안은 어제 공원에서 그녀를 보았다.",
+        correctedSentence: "Juan la vio en el parque ayer.",
+        explanation: "<b>ver</b>(보다)는 타동사로 '~를 보다'입니다. 3인칭 여성 단수를 가리키는 직접목적 대명사 <b>la</b>('그녀를')가 동사 앞에 정확히 위치했습니다.",
+        trap: "3인칭 직접목적 대명사: lo(남성/그를), la(여성/그녀를)."
+      },
+      {
+        id: 9,
+        sentence: "El profesor <mark class='bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded'>nos</mark> explicó la lección.",
+        targetPronoun: "nos",
+        isCorrect: true,
+        type: "INDIRECT",
+        translation: "선생님께서 우리에게 과를 설명해주셨다.",
+        correctedSentence: "El profesor nos explicó la lección.",
+        explanation: "<b>explicar</b>는 '설명을(la lección = 직접목적) ~에게(nos = 간접목적) 해주다' 구문입니다. <b>nos</b>는 '우리에게'를 나타내는 <b>간접목적 대명사</b>입니다.",
+        trap: "nos는 '우리를'(직접)과 '우리에게'(간접) 형태가 같습니다. 뒤에 'la lección'이 있으므로 간접목적어입니다."
+      },
+      {
+        id: 10,
+        sentence: "Entre <mark class='bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded'>ti</mark> y mí no hay secretos.",
+        targetPronoun: "ti",
+        isCorrect: false,
+        type: "PREP",
+        translation: "너와 나 사이에는 비밀이 없다.",
+        correctedSentence: "Entre <u>tú y yo</u> no hay secretos.",
+        explanation: "<b>대대적인 예외 규칙!</b> 전치사 <b>entre</b>(~ 사이에), <b>según</b>(~에 따르면) 뒤에서는 전치격(mí, ti)을 쓰지 않고 <b>주격 대명사(tú, yo)</b>를 사용해야 합니다!",
+        trap: "전치사 entre와 según 뒤에서는 mí, ti가 아니라 yo, tú를 씁니다!"
+      },
+      {
+        id: 11,
+        sentence: "Según <mark class='bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded'>ti</mark>, la reunión es mañana.",
+        targetPronoun: "ti",
+        isCorrect: false,
+        type: "PREP",
+        translation: "너에 따르면 회의는 내일이다.",
+        correctedSentence: "Según <u>tú</u>, la reunión es mañana.",
+        explanation: "전치사 <b>según</b>(~에 따르면)은 예외적으로 전치격(ti) 대신 <b>주격 대명사 tú</b>를 써야 합니다. 따라서 <i>Según tú</i>가 올바릅니다.",
+        trap: "según ti ❌ $\rightarrow$ según tú ⭕"
+      },
+      {
+        id: 12,
+        sentence: "Este dinero es para <mark class='bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded'>mi</mark>.",
+        targetPronoun: "mi",
+        isCorrect: false,
+        type: "PREP",
+        translation: "이 돈은 나를 위한 것이다.",
+        correctedSentence: "Este dinero es para <u>mí</u>.",
+        explanation: "전치사 <b>para</b> 뒤의 1인칭 전치격 대명사는 소유격 <i>mi</i>(나의)와 구별하기 위해 반드시 <b>강세 부호(틸데 `´`)</b>를 붙인 <b>mí</b>로 적어야 합니다.",
+        trap: "mi = 나의 (소유격) / mí = 나 (전치격 대명사)"
+      },
+      {
+        id: 13,
+        sentence: "Ella <mark class='bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded'>me</mark> dijo la verdad.",
+        targetPronoun: "me",
+        isCorrect: true,
+        type: "INDIRECT",
+        translation: "그녀는 나에게 진실을 말했다.",
+        correctedSentence: "Ella me dijo la verdad.",
+        explanation: "<b>decir</b>(말하다) 동사는 '진실을(la verdad = 직접목적) 나에게(me = 간접목적)' 말하는 구조입니다. 따라서 <b>me</b>는 <b>간접목적 대명사</b>입니다.",
+        trap: "decir algo a alguien (누군가에게 무언가를 말하다)"
+      },
+      {
+        id: 14,
+        sentence: "¿Te acuerdas de <mark class='bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded'>mí</mark>?",
+        targetPronoun: "mí",
+        isCorrect: true,
+        type: "PREP",
+        translation: "너 나를 기억하니?",
+        correctedSentence: "¿Te acuerdas de mí?",
+        explanation: "<b>acordarse de</b>(~를 기억하다) 숙어에서 전치사 <b>de</b> 뒤에 위치한 1인칭 전치격 대명사 <b>mí</b>(강세 부호 포함)는 문법적으로 완벽합니다.",
+        trap: "acordarse de + 전치격 대명사"
+      },
+      {
+        id: 15,
+        sentence: "Pedro <mark class='bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded'>la</mark> mandó una carta a su madre.",
+        targetPronoun: "la",
+        isCorrect: false,
+        type: "INDIRECT",
+        translation: "페드로는 어머니에게 편지를 보냈다.",
+        correctedSentence: "Pedro <u>le</u> mandó una carta a su madre.",
+        explanation: "<b>mandar</b>(보내다)는 '편지를(una carta) 어머니에게(a su madre)' 보낸 것입니다. 3인칭 간접목적어(~에게)는 성별 구별 없이 <b>le</b>를 써야 합니다. <i>la</i>는 직접목적어('그녀를')이므로 틀립니다.",
+        trap: "어머니'에게' 보낸 것이므로 여성이라도 la가 아닌 간접목적 대명사 le를 씁니다."
+      },
+      {
+        id: 16,
+        sentence: "El perro corrió hacia <mark class='bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded'>nosotros</mark>.",
+        targetPronoun: "nosotros",
+        isCorrect: true,
+        type: "PREP",
+        translation: "개는 우리를 향해 달려왔다.",
+        correctedSentence: "El perro corrió hacia nosotros.",
+        explanation: "전치사 <b>hacia</b>(~를 향해) 뒤에 오므로 <b>전치격 대명사</b>입니다. 1/2인칭 복수(nosotros, vosotros) 및 3인칭(él, ella, ellos)은 주격과 전치격 형태가 동일합니다.",
+        trap: "mí, ti를 제외한 대부분의 인칭대명사는 주격과 전치격 형태가 같습니다."
+      },
+      {
+        id: 17,
+        sentence: "¿A <mark class='bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded'>ti</mark> te gusta viajar en avión?",
+        targetPronoun: "ti",
+        isCorrect: true,
+        type: "PREP",
+        translation: "너는 비행기 여행하는 것을 좋아하니?",
+        correctedSentence: "¿A ti te gusta viajar en avión?",
+        explanation: "전치사 <b>a</b> 뒤의 <b>ti</b>는 2인칭 전치격 대명사입니다. 강세 부호 없이 올바르게 쓰였습니다.",
+        trap: "a ti te gusta에서 ti는 전치격 대명사입니다."
+      },
+      {
+        id: 18,
+        sentence: "Quiero hablar con <mark class='bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded'>contigo</mark>.",
+        targetPronoun: "contigo",
+        isCorrect: false,
+        type: "PREP",
+        translation: "나는 너와 이야기하고 싶다.",
+        correctedSentence: "Quiero hablar <u>contigo</u>.",
+        explanation: "<b>contigo</b> 단어 자체에 이미 전치사 <i>con</i>(with)의 의미가 포함되어 있습니다! 따라서 앞에 <i>con contigo</i>처럼 전치사를 또 쓰면 중복 오류가 됩니다.",
+        trap: "con contigo ❌ $\rightarrow$ contigo ⭕ (con이 이중으로 쓰이지 않도록 주의)"
+      },
+      {
+        id: 19,
+        sentence: "Te busqué ayer pero no <mark class='bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded'>te</mark> encontré.",
+        targetPronoun: "te",
+        isCorrect: true,
+        type: "DIRECT",
+        translation: "어제 너를 찾았지만 너를 찾지 못했다.",
+        correctedSentence: "Te busqué ayer pero no te encontré.",
+        explanation: "<b>encontrar</b>(찾다/발견하다)는 타동사로 '너를'이라는 <b>직접목적어</b>가 필요합니다. 2인칭 직접목적 대명사 <b>te</b>가 올바르게 쓰였습니다.",
+        trap: "encontrar a alguien (누군가를 찾다 - 직접목적)"
+      },
+      {
+        id: 20,
+        sentence: "El profesor <mark class='bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded'>les</mark> dio los exámenes a los estudiantes.",
+        targetPronoun: "les",
+        isCorrect: true,
+        type: "INDIRECT",
+        translation: "선생님께서 학생들에게 시험지를 주셨다.",
+        correctedSentence: "El profesor les dio los exámenes a los estudiantes.",
+        explanation: "<b>dar</b>(주다) 동사의 수혜 대상이 '학생들에게'(복수)입니다. 3인칭 복수 간접목적 대명사 <b>les</b>가 올바르게 쓰였습니다.",
+        trap: "a los estudiantes와 les는 간접목적어 중복 표기(Reduplicación)로 스페인어에서 지극히 자연스러운 문법입니다."
+      }
+    ];
+
+    /* ==========================================================================
+       2. GLOBAL APP STATE
+       ========================================================================== */
+    let currentQuestions = [...OFFLINE_BANK];
+    let filteredQuestions = [...OFFLINE_BANK];
+    let currentIndex = 0;
+    let selectedFilter = 'ALL';
+    let isAiMode = false;
+
+    // User Selections for Current Question
+    let userSelectedOx = null; // true / false
+    let userSelectedType = null; // 'PREP' | 'DIRECT' | 'INDIRECT'
+    let isAnswerSubmitted = false;
+
+    // Stats & Progress
+    let stats = {
+      totalAnswered: 0,
+      totalCorrect: 0,
+      streak: 0,
+      prepCorrect: 0,
+      prepTotal: 0,
+      directCorrect: 0,
+      directTotal: 0,
+      indirectCorrect: 0,
+      indirectTotal: 0,
+      mistakes: [] // Array of question IDs or objects
+    };
+
+    let isSoundEnabled = true;
+
+    /* ==========================================================================
+       3. INITIALIZATION & LOCALSTORAGE
+       ========================================================================== */
+    window.onload = function() {
+      loadStatsFromStorage();
+      updateHeaderStats();
+      filterQuestions();
+      renderCurrentQuestion();
+      lucide.createIcons();
+      setupKeyboardShortcuts();
+    };
+
+    function loadStatsFromStorage() {
+      const saved = localStorage.getItem('es_pronoun_quiz_stats');
+      if (saved) {
+        try {
+          stats = JSON.parse(saved);
+        } catch(e) {
+          console.error("Failed to parse saved stats", e);
+        }
+      }
+    }
+
+    function saveStatsToStorage() {
+      localStorage.setItem('es_pronoun_quiz_stats', JSON.stringify(stats));
+    }
+
+    /* ==========================================================================
+       4. FILTERING & MODES
+       ========================================================================== */
+    function setFilter(type) {
+      selectedFilter = type;
+      
+      // Update Filter UI buttons
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('bg-blue-600', 'text-white');
+        btn.classList.add('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
+      });
+
+      const activeBtn = document.getElementById(`filter-${type}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
+        activeBtn.classList.add('bg-blue-600', 'text-white');
+      }
+
+      filterQuestions();
+      currentIndex = 0;
+      renderCurrentQuestion();
+    }
+
+    function filterQuestions() {
+      if (selectedFilter === 'ALL') {
+        filteredQuestions = [...currentQuestions];
+      } else if (selectedFilter === 'MISTAKES') {
+        filteredQuestions = stats.mistakes.length > 0 ? [...stats.mistakes] : [];
+      } else {
+        filteredQuestions = currentQuestions.filter(q => q.type === selectedFilter);
+      }
+
+      // Update Mistake Badge Count
+      document.getElementById('mistakeBadge').innerText = stats.mistakes.length;
+    }
+
+    function toggleMode() {
+      isAiMode = !isAiMode;
+      const label = document.getElementById('modeLabel');
+      const btn = document.getElementById('toggleAiModeBtn');
+
+      if (isAiMode) {
+        label.innerText = '🤖 AI 무한 모드';
+        btn.classList.add('ring-2', 'ring-indigo-500');
+      } else {
+        label.innerText = '기본 문제 은행';
+        btn.classList.remove('ring-2', 'ring-indigo-500');
+      }
+    }
+
+    /* ==========================================================================
+       5. RENDER QUESTION
+       ========================================================================== */
+    function renderCurrentQuestion() {
+      // Reset interaction state
+      userSelectedOx = null;
+      userSelectedType = null;
+      isAnswerSubmitted = false;
+
+      // Hide feedback, show interaction form
+      document.getElementById('feedbackCard').classList.add('hidden');
+      document.getElementById('interactionForm').classList.remove('hidden');
+      document.getElementById('koreanTranslation').classList.add('hidden');
+
+      // Reset Button Styles
+      resetButtonStyles();
+
+      if (filteredQuestions.length === 0) {
+        renderEmptyState();
+        return;
+      }
+
+      const q = filteredQuestions[currentIndex];
+
+      // Update Progress Bar
+      const progressPercent = ((currentIndex + 1) / filteredQuestions.length) * 100;
+      document.getElementById('quizProgressBar').style.width = `${progressPercent}%`;
+
+      // Counter
+      document.getElementById('questionCounterText').innerText = `문제 ${currentIndex + 1} / ${filteredQuestions.length}`;
+
+      // Category Tag
+      const categoryMap = {
+        'PREP': '📌 전치격 대명사',
+        'DIRECT': '🎯 직접목적 대명사',
+        'INDIRECT': '💌 간접목적 대명사'
+      };
+      document.getElementById('questionCategoryTag').innerText = categoryMap[q.type] || '문법 연습';
+
+      // Sentence & Target Label
+      document.getElementById('spanishSentence').innerHTML = q.sentence;
+      document.getElementById('targetPronounLabel').innerText = q.targetPronoun;
+      document.getElementById('koreanTranslation').innerText = q.translation;
+
+      // Re-initialize icons
+      lucide.createIcons();
+    }
+
+    function renderEmptyState() {
+      document.getElementById('spanishSentence').innerHTML = "<span class='text-slate-400 text-lg'>해당 필터에 문제 데이터가 없습니다.</span>";
+      document.getElementById('questionCounterText').innerText = "0 / 0";
+      document.getElementById('interactionForm').classList.add('hidden');
+    }
+
+    function toggleTranslationHint() {
+      const transEl = document.getElementById('koreanTranslation');
+      transEl.classList.toggle('hidden');
+    }
+
+    function resetButtonStyles() {
+      // OX Buttons
+      const btnO = document.getElementById('btnCorrectO');
+      const btnX = document.getElementById('btnCorrectX');
+      
+      [btnO, btnX].forEach(btn => {
+        btn.classList.remove('ring-4', 'ring-blue-500', 'bg-blue-50', 'dark:bg-blue-950/40');
+      });
+
+      // Type Buttons
+      ['PREP', 'DIRECT', 'INDIRECT'].forEach(type => {
+        const btn = document.getElementById(`btnType${type}`);
+        if (btn) {
+          btn.classList.remove('ring-4', 'ring-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-950/40', 'border-indigo-500');
+        }
+      });
+
+      // Submit Button
+      const subBtn = document.getElementById('submitAnswerBtn');
+      subBtn.disabled = true;
+      subBtn.classList.remove('bg-gradient-to-r', 'from-blue-600', 'to-indigo-600', 'text-white', 'cursor-pointer', 'shadow-blue-500/25');
+      subBtn.classList.add('bg-slate-300', 'dark:bg-slate-800', 'text-slate-500', 'dark:text-slate-400', 'cursor-not-allowed');
+      subBtn.innerHTML = `<span>두 가지 답변을 모두 선택해주세요</span><i data-lucide="arrow-right" class="w-5 h-5"></i>`;
+      lucide.createIcons();
+    }
+
+    /* ==========================================================================
+       6. USER SELECTION HANDLERS
+       ========================================================================== */
+    function selectCorrectness(isCorrect) {
+      if (isAnswerSubmitted) return;
+      userSelectedOx = isCorrect;
+
+      const btnO = document.getElementById('btnCorrectO');
+      const btnX = document.getElementById('btnCorrectX');
+
+      if (isCorrect) {
+        btnO.classList.add('ring-4', 'ring-emerald-500', 'bg-emerald-50', 'dark:bg-emerald-950/40');
+        btnX.classList.remove('ring-4', 'ring-rose-500', 'bg-rose-50', 'dark:bg-rose-950/40');
+      } else {
+        btnX.classList.add('ring-4', 'ring-rose-500', 'bg-rose-50', 'dark:bg-rose-950/40');
+        btnO.classList.remove('ring-4', 'ring-emerald-500', 'bg-emerald-50', 'dark:bg-emerald-950/40');
+      }
+
+      checkSelectionComplete();
+    }
+
+    function selectType(type) {
+      if (isAnswerSubmitted) return;
+      userSelectedType = type;
+
+      ['PREP', 'DIRECT', 'INDIRECT'].forEach(t => {
+        const btn = document.getElementById(`btnType${t}`);
+        if (t === type) {
+          btn.classList.add('ring-4', 'ring-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-950/40', 'border-indigo-500');
+        } else {
+          btn.classList.remove('ring-4', 'ring-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-950/40', 'border-indigo-500');
+        }
+      });
+
+      checkSelectionComplete();
+    }
+
+    function checkSelectionComplete() {
+      if (userSelectedOx !== null && userSelectedType !== null) {
+        const subBtn = document.getElementById('submitAnswerBtn');
+        subBtn.disabled = false;
+        subBtn.classList.remove('bg-slate-300', 'dark:bg-slate-800', 'text-slate-500', 'dark:text-slate-400', 'cursor-not-allowed');
+        subBtn.classList.add('bg-gradient-to-r', 'from-blue-600', 'to-indigo-600', 'text-white', 'cursor-pointer', 'shadow-blue-500/25');
+        subBtn.innerHTML = `<span>정답 제출 및 해설 확인</span><i data-lucide="check" class="w-5 h-5"></i>`;
+        lucide.createIcons();
+      }
+    }
+
+    /* ==========================================================================
+       7. SUBMIT & FEEDBACK EVALUATION
+       ========================================================================== */
+    function submitAnswer() {
+      if (userSelectedOx === null || userSelectedType === null || isAnswerSubmitted) return;
+      isAnswerSubmitted = true;
+
+      const q = filteredQuestions[currentIndex];
+      
+      const isOxCorrect = (userSelectedOx === q.isCorrect);
+      const isTypeCorrect = (userSelectedType === q.type);
+      const isFullyCorrect = isOxCorrect && isTypeCorrect;
+
+      // Update Stats
+      stats.totalAnswered++;
+      if (q.type === 'PREP') { stats.prepTotal++; if (isFullyCorrect) stats.prepCorrect++; }
+      if (q.type === 'DIRECT') { stats.directTotal++; if (isFullyCorrect) stats.directCorrect++; }
+      if (q.type === 'INDIRECT') { stats.indirectTotal++; if (isFullyCorrect) stats.indirectCorrect++; }
+
+      if (isFullyCorrect) {
+        stats.totalCorrect++;
+        stats.streak++;
+        playAudio(true);
+        if (stats.streak > 0 && stats.streak % 5 === 0) {
+          confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 } });
+        }
+        // Remove from mistakes if present
+        stats.mistakes = stats.mistakes.filter(m => m.id !== q.id);
+      } else {
+        stats.streak = 0;
+        playAudio(false);
+        // Add to mistakes if not already present
+        if (!stats.mistakes.some(m => m.id === q.id)) {
+          stats.mistakes.push(q);
+        }
+      }
+
+      saveStatsToStorage();
+      updateHeaderStats();
+
+      // RENDER FEEDBACK CARD
+      renderFeedbackCard(q, isFullyCorrect, isOxCorrect, isTypeCorrect);
+    }
+
+    function renderFeedbackCard(q, isFullyCorrect, isOxCorrect, isTypeCorrect) {
+      document.getElementById('interactionForm').classList.add('hidden');
+      const card = document.getElementById('feedbackCard');
+      card.classList.remove('hidden');
+
+      const banner = document.getElementById('feedbackBanner');
+      const iconBox = document.getElementById('feedbackIconBox');
+      const title = document.getElementById('feedbackTitle');
+      const subtitle = document.getElementById('feedbackSubtitle');
+
+      if (isFullyCorrect) {
+        banner.className = "p-4 rounded-2xl flex items-center justify-between gap-4 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-100 glow-success";
+        iconBox.className = "w-10 h-10 rounded-xl flex items-center justify-center bg-emerald-500 text-white font-bold text-xl";
+        iconBox.innerHTML = "✓";
+        title.innerText = "🎉 완벽합니다! (정답)";
+        subtitle.innerText = "문법 판단과 대명사 종류를 모두 정확히 맞추셨습니다.";
+      } else {
+        banner.className = "p-4 rounded-2xl flex items-center justify-between gap-4 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-rose-900 dark:text-rose-100 glow-error";
+        iconBox.className = "w-10 h-10 rounded-xl flex items-center justify-center bg-rose-500 text-white font-bold text-xl";
+        iconBox.innerHTML = "✕";
+        title.innerText = "😅 아쉽네요! 다시 확인해볼까요?";
+        subtitle.innerText = "아래 해설을 읽어보고 원인을 파악해 보세요.";
+      }
+
+      // 1. OX Result comparison
+      const userOxText = userSelectedOx ? "O (올바름)" : "X (틀림)";
+      const correctOxText = q.isCorrect ? "O (올바름)" : "X (틀림)";
+      document.getElementById('userOxResult').innerText = `내 선택: ${userOxText}`;
+      document.getElementById('correctOxResult').innerText = `정답: ${correctOxText}`;
+      document.getElementById('correctOxResult').className = isOxCorrect ? "text-emerald-600 dark:text-emerald-400 font-bold" : "text-rose-600 dark:text-rose-400 font-bold";
+
+      // 2. Type Result comparison
+      const typeLabelMap = { 'PREP': '📌 전치격', 'DIRECT': '🎯 직접목적', 'INDIRECT': '💌 간접목적' };
+      document.getElementById('userTypeResult').innerText = `내 선택: ${typeLabelMap[userSelectedType]}`;
+      document.getElementById('correctTypeResult').innerText = `정답: ${typeLabelMap[q.type]}`;
+      document.getElementById('correctTypeResult').className = isTypeCorrect ? "text-indigo-600 dark:text-indigo-400 font-bold" : "text-rose-600 dark:text-rose-400 font-bold";
+
+      // Correction Box if question was X
+      const correctionBox = document.getElementById('correctionBox');
+      if (!q.isCorrect) {
+        correctionBox.classList.remove('hidden');
+        document.getElementById('correctedSentenceText').innerHTML = q.correctedSentence;
+      } else {
+        correctionBox.classList.add('hidden');
+      }
+
+      // Grammar Explanation & Trap
+      document.getElementById('grammarExplanation').innerHTML = q.explanation;
+      document.getElementById('trapText').innerText = q.trap || "기본 대명사 수식 규칙을 복습해 보세요.";
+
+      lucide.createIcons();
+    }
+
+    function nextQuestion() {
+      if (currentIndex < filteredQuestions.length - 1) {
+        currentIndex++;
+      } else {
+        currentIndex = 0; // Loop back
+      }
+      renderCurrentQuestion();
+    }
+
+    /* ==========================================================================
+       8. GEMINI AI INFINITE GENERATOR INTEGRATION
+       ========================================================================== */
+    async function generateAiBatch() {
+      const btn = document.getElementById('generateAiBatchBtn');
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> 생성 중...`;
+      lucide.createIcons();
+
+      const promptSystem = "You are a world-class Spanish grammar professor. Generate 5 unique Spanish grammar quiz questions specifically focused on Spanish pronouns: Prepositional (전치격: mí, ti, conmigo, contigo, etc.), Direct Object (직접목적: me, te, lo, la, nos, os, los, las), and Indirect Object (간접목적: me, te, le, nos, os, les). Output strictly valid JSON array.";
+      const promptQuery = "Create 5 diverse Spanish pronoun questions. Return an array of 5 JSON objects with properties: sentence (HTML string with target pronoun highlighted inside <mark class='bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded'>pronoun</mark>), targetPronoun (string), isCorrect (boolean), type ('PREP'|'DIRECT'|'INDIRECT'), translation (Korean string), correctedSentence (HTML string if isCorrect is false, else same as sentence), explanation (Korean html explanation comparing Spanish vs English/Korean), trap (Korean summary string of common mistake).";
+
+      try {
+        const apiKey = ""; // Canvas runtime auto-injects if available
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+        const payload = {
+          contents: [{ parts: [{ text: promptQuery }] }],
+          systemInstruction: { parts: [{ text: promptSystem }] },
+          generationConfig: {
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: "ARRAY",
+              items: {
+                type: "OBJECT",
+                properties: {
+                  sentence: { type: "STRING" },
+                  targetPronoun: { type: "STRING" },
+                  isCorrect: { type: "BOOLEAN" },
+                  type: { type: "STRING" },
+                  translation: { type: "STRING" },
+                  correctedSentence: { type: "STRING" },
+                  explanation: { type: "STRING" },
+                  trap: { type: "STRING" }
+                },
+                required: ["sentence", "targetPronoun", "isCorrect", "type", "translation", "correctedSentence", "explanation", "trap"]
+              }
+            }
+          }
+        };
+
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error("API call failed");
+
+        const result = await response.json();
+        const jsonText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+        
+        if (jsonText) {
+          const newQuestions = JSON.parse(jsonText);
+          
+          // Assign unique IDs
+          newQuestions.forEach((q, idx) => {
+            q.id = Date.now() + idx;
+          });
+
+          // Prepend to questions
+          currentQuestions = [...newQuestions, ...currentQuestions];
+          filterQuestions();
+          currentIndex = 0;
+          renderCurrentQuestion();
+
+          // Switch to AI Mode label
+          isAiMode = true;
+          document.getElementById('modeLabel').innerText = '🤖 AI 무한 모드';
+          document.getElementById('toggleAiModeBtn').classList.add('ring-2', 'ring-indigo-500');
+
+          alert("✨ Gemini AI가 새로운 스페인어 대명사 문제 5개를 생성했습니다!");
+        } else {
+          throw new Error("Invalid response payload");
+        }
+
+      } catch (err) {
+        console.warn("Falling back to local dynamic generator", err);
+        fallbackLocalGenerator();
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="sparkles" class="w-3.5 h-3.5"></i> AI 문제 5개 무한 생생하기`;
+        lucide.createIcons();
+      }
+    }
+
+    function fallbackLocalGenerator() {
+      // Local parametric generator for offline infinite questions
+      const verbs = [
+        { es: "invitar", type: "DIRECT", trans: "초대하다" },
+        { es: "escribir", type: "INDIRECT", trans: "편지를 쓰다" },
+        { es: "regalar", type: "INDIRECT", trans: "선물하다" },
+        { es: "buscar", type: "DIRECT", trans: "찾다" },
+        { es: "llamar", type: "DIRECT", trans: "전화하다" }
+      ];
+
+      const generated = [];
+      for (let i = 0; i < 5; i++) {
+        const v = verbs[i % verbs.length];
+        generated.push({
+          id: Date.now() + i,
+          sentence: `El profesor <mark class='bg-amber-200 dark:bg-amber-800/80 px-1.5 py-0.5 rounded'>me</mark> ${v.es}ó un libro ayer.`,
+          targetPronoun: "me",
+          isCorrect: true,
+          type: v.type,
+          translation: `선생님께서 어제 나에게 책을 ${v.trans}하셨다.`,
+          correctedSentence: `El profesor me ${v.es}ó un libro ayer.`,
+          explanation: `동사 <b>${v.es}</b>는 스페인어 대명사 수식 구문에서 ${v.type === 'INDIRECT' ? '간접목적어(~에게)' : '직접목적어(~를)'}를 취합니다.`,
+          trap: "동사의 타동사/자동사 및 목적어 수여 구조를 기억하세요."
+        });
+      }
+
+      currentQuestions = [...generated, ...currentQuestions];
+      filterQuestions();
+      currentIndex = 0;
+      renderCurrentQuestion();
+      alert("⚡ 오프라인 생생기로 새 문법 문제 5개가 충전되었습니다!");
+    }
+
+    /* ==========================================================================
+       9. STATS & MODAL UPDATES
+       ========================================================================== */
+    function updateHeaderStats() {
+      document.getElementById('streakCount').innerText = stats.streak;
+      
+      const rate = stats.totalAnswered > 0 ? Math.round((stats.totalCorrect / stats.totalAnswered) * 100) : 0;
+      document.getElementById('scoreText').innerText = `${stats.totalCorrect}/${stats.totalAnswered} (${rate}%)`;
+      document.getElementById('mistakeBadge').innerText = stats.mistakes.length;
+    }
+
+    function openStatsModal() {
+      document.getElementById('modalTotalQuestions').innerText = stats.totalAnswered;
+      const accuracy = stats.totalAnswered > 0 ? Math.round((stats.totalCorrect / stats.totalAnswered) * 100) : 0;
+      document.getElementById('modalAccuracy').innerText = `${accuracy}%`;
+
+      const prepRate = stats.prepTotal > 0 ? Math.round((stats.prepCorrect / stats.prepTotal) * 100) : 0;
+      const directRate = stats.directTotal > 0 ? Math.round((stats.directCorrect / stats.directTotal) * 100) : 0;
+      const indirectRate = stats.indirectTotal > 0 ? Math.round((stats.indirectCorrect / stats.indirectTotal) * 100) : 0;
+
+      document.getElementById('prepRateText').innerText = `${prepRate}% (${stats.prepCorrect}/${stats.prepTotal})`;
+      document.getElementById('prepProgressBar').style.width = `${prepRate}%`;
+
+      document.getElementById('directRateText').innerText = `${directRate}% (${stats.directCorrect}/${stats.directTotal})`;
+      document.getElementById('directProgressBar').style.width = `${directRate}%`;
+
+      document.getElementById('indirectRateText').innerText = `${indirectRate}% (${stats.indirectCorrect}/${stats.indirectTotal})`;
+      document.getElementById('indirectProgressBar').style.width = `${indirectRate}%`;
+
+      document.getElementById('statsModal').classList.remove('hidden');
+    }
+
+    function closeStatsModal() {
+      document.getElementById('statsModal').classList.add('hidden');
+    }
+
+    function resetStats() {
+      if (confirm("정말로 모든 학습 통계와 오답 노트를 초기화하시겠습니까?")) {
+        stats = {
+          totalAnswered: 0,
+          totalCorrect: 0,
+          streak: 0,
+          prepCorrect: 0, prepTotal: 0,
+          directCorrect: 0, directTotal: 0,
+          indirectCorrect: 0, indirectTotal: 0,
+          mistakes: []
+        };
+        saveStatsToStorage();
+        updateHeaderStats();
+        closeStatsModal();
+        filterQuestions();
+        renderCurrentQuestion();
+      }
+    }
+
+    /* ==========================================================================
+       10. AUDIO EFFECTS (Web Audio API Synthesizer)
+       ========================================================================== */
+    function toggleSound() {
+      isSoundEnabled = !isSoundEnabled;
+      const icon = document.getElementById('soundIcon');
+      if (isSoundEnabled) {
+        icon.setAttribute('data-lucide', 'volume-2');
+      } else {
+        icon.setAttribute('data-lucide', 'volume-x');
+      }
+      lucide.createIcons();
+    }
+
+    function playAudio(isSuccess) {
+      if (!isSoundEnabled) return;
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (isSuccess) {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+          osc.frequency.exponentialRampToValueAtTime(659.25, ctx.currentTime + 0.15); // E5
+          gain.gain.setValueAtTime(0.15, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.25);
+        } else {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(220, ctx.currentTime); // A3
+          osc.frequency.exponentialRampToValueAtTime(174.61, ctx.currentTime + 0.2); // F3
+          gain.gain.setValueAtTime(0.2, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.25);
+        }
+      } catch (e) {
+        // AudioContext disabled or unsupported
+      }
+    }
+
+    /* ==========================================================================
+       11. KEYBOARD SHORTCUTS
+       ========================================================================== */
+    function setupKeyboardShortcuts() {
+      window.addEventListener('keydown', (e) => {
+        // Avoid triggers if inside input
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+        const key = e.key.toLowerCase();
+
+        if (!isAnswerSubmitted) {
+          if (key === 'o' || key === 'ㅐ') selectCorrectness(true);
+          if (key === 'x' || key === 'ㅌ') selectCorrectness(false);
+          if (key === '1') selectType('PREP');
+          if (key === '2') selectType('DIRECT');
+          if (key === '3') selectType('INDIRECT');
+          if (key === 'enter' && userSelectedOx !== null && userSelectedType !== null) {
+            submitAnswer();
+          }
+        } else {
+          if (key === 'enter' || key === ' ') {
+            e.preventDefault();
+            nextQuestion();
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
