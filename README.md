@@ -1,2 +1,0 @@
-# spanishquiz
-buena suerte
